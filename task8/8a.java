@@ -9,7 +9,7 @@ public class CheapestFlightPath {
         int n = g.size();
         int[] dist = new int[n];
         Arrays.fill(dist, Integer.MAX_VALUE);
-        dist[s] = 0;
+        dist[s] = 0tas;
         PriorityQueue<Node> pq = new PriorityQueue<>();
         pq.add(new Node(s, 0));
 
