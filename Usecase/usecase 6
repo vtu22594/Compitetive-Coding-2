@@ -1,0 +1,92 @@
+import java.util.*;
+public class ForestFireEscape {
+    static class Cell {
+        int x, y, time;
+        Cell(int x, int y, int time) {
+            this.x = x;
+            this.y = y;
+            this.time = time;
+        }
+    }
+static int[][] directions = {{-1,0}, {1,0}, {0,-1}, {0,1}};
+    public static List<int[]> forestFireEscape(int[][] grid, int[] start, int[] 
+        int n = grid.length;
+        int m = grid[0].length;
+int m = grid[0].length;
+        int[][] fireTime = new int[n][m];
+        for (int[] row : fireTime)
+            Arrays.fill(row, Integer.MAX_VALUE);
+        Queue<Cell> fireQ = new LinkedList<>();
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < m; j++)
+                if (grid[i][j] == 1) {
+                    fireQ.offer(new Cell(i, j, 0));
+                    fireTime[i][j] = 0;
+                }
+        while (!fireQ.isEmpty()) {
+            Cell f = fireQ.poll();
+            for (int[] dir : directions) {
+                int nx = f.x + dir[0], ny = f.y + dir[1];
+                if (nx >= 0 && ny >= 0 && nx < n && ny < m && grid[nx][ny] == 0) {
+                    if (fireTime[nx][ny] > f.time + 1) {
+                        fireTime[nx][ny] = f.time + 1;
+                        fireQ.offer(new Cell(nx, ny, f.time + 1));
+                    }
+                }
+            }
+        }
+        boolean[][] visited = new boolean[n][m];
+        Queue<Cell> q = new LinkedList<>();
+        Map<String, String> parent = new HashMap<>();
+        int sx = start[0], sy = start[1];
+        int ex = end[0], ey = end[1];
+        q.offer(new Cell(sx, sy, 0));
+        visited[sx][sy] = true;
+             while (!q.isEmpty()) {
+                 
+Cell curr = q.poll();
+            if (curr.x == ex && curr.y == ey) {
+                List<int[]> path = new ArrayList<>();
+                String key = curr.x + "," + curr.y;
+                while (!key.equals(sx + "," + sy)) {
+                    String[] parts = key.split(",");
+                    path.add(new int[]{Integer.parseInt(parts[0]), Integer.parseInt(parts[1])});
+                    key = parent.get(key);
+                }
+                path.add(new int[]{sx, sy});
+                Collections.reverse(path);
+                return path;
+            }
+            for (int[] dir : directions) {
+                int nx = curr.x + dir[0], ny = curr.y + dir[1];
+                if (nx >= 0 && ny >= 0 && nx < n && ny < m &&
+                    !visited[nx][ny] && grid[nx][ny] == 0) {
+                    if (curr.time + 1 < fireTime[nx][ny]) {
+                        visited[nx][ny] = true;
+                        parent.put(nx + "," + ny, curr.x + "," + curr.y);
+                        q.offer(new Cell(nx, ny, curr.time + 1));
+                    }
+                }
+            }
+        }
+return null;
+    }
+    public static void main(String[] args) {
+        int[][] grid = {
+            {0, 0, 0, 1},
+            {0, 1, 0, 0},
+            {0, 0, 0, 0}
+};
+        int[] start = {0, 0};
+        int[] end = {2, 3};
+        List<int[]> path = forestFireEscape(grid, start, end);
+        if (path != null) {
+            System.out.println("Safest and Shortest Path:");
+            for (int[] cell : path) {
+                System.out.println(Arrays.toString(cell));
+            }
+        } else {
+            System.out.println("No safe path found!");
+        }
+    }
+}
